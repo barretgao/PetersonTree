@@ -13,7 +13,7 @@ class BasicTestTreeLock {
 
 		for (int i = 0; i < numThr; i++) {
 			threads[i] = new Thread(ctr,""+i);
-			threads[i].start(); //Run the threads
+			threads[i].run(); //Run the threads
 		}
 		System.out.println("Counter is " + ctr.getCount());
 	}

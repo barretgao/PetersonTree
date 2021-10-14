@@ -4,7 +4,6 @@
 import java.util.ArrayList;
 
 public class TreeLock {
-	int numT;
 	//store the maximum level needed with given threads.
 	final private int treeLevel;
 	//the 2-d array that used as a tree to process competing lock operations.
@@ -19,6 +18,7 @@ public class TreeLock {
 		tree = new PetersonNode[treeLevel+1][_numThr];
 		for(int i = 0; i <= treeLevel; i++) {
 			for(int j = 0; j < _numThr; j++) {
+				//the index is just a useless parameter.
 				tree[i][j] = new PetersonNode(i*10 + j);
 			}
 		}
@@ -27,8 +27,15 @@ public class TreeLock {
 	public void lock() {
 		//get the thread that wants to access the critical area.
 		//it will also be the relative position for the thread to be in the "tree"
+		int threadId;
 		String name = Thread.currentThread().getName();
-		int threadId = Integer.parseInt(Thread.currentThread().getName());
+		//the case to check if the thread access is the main thread.
+		if (name.equals("main")) {
+			threadId = 0;
+		}
+		else{
+			threadId = Integer.parseInt(Thread.currentThread().getName());
+		}
 
 		//the for loop that will go from top to bottom, where the tree[treeLevel][0] is the root node
 		//the thread that enter this position will be the one that acquire the final lock and enter the critical section
@@ -50,20 +57,20 @@ public class TreeLock {
 	}
 
 	public void unlock() {
-		//get the thread ID that want to unlock the lock it acquires.
-		int threadId = Integer.parseInt(Thread.currentThread().getName());
-		//record all the relative position this thread has been with.
-		ArrayList<Integer> route = new ArrayList<>();
-
-		//find all position that this thread has been in. and add them to the array.
-		for(int i = 0; i <= treeLevel; i++) {
-			route.add(threadId);
-			threadId = (int) Math.floor(threadId/2);
+		int threadId;
+		String name = Thread.currentThread().getName();
+		//deal with the main thread situation.
+		if (name.equals("main")) {
+			threadId = 0;
 		}
-
-		//now trace the route to unlock the petersonNode object in corresponding position.
-		for(int j = treeLevel; j >= 0; j--) {
-			tree[j][route.get(j)].unlock(route.get(j));
+		else {
+			//get the thread ID that want to unlock the lock it acquires.
+			threadId = Integer.parseInt(Thread.currentThread().getName());
+		}
+		//trace the same path of the thread that acquires the lock, and unlock all the locks alone the way.
+		for(int i = 0; i <= treeLevel; i++) {
+			tree[i][threadId].unlock(threadId);
+			threadId = (int) Math.floor(threadId/2);
 		}
 	}
 }

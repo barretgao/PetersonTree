@@ -28,7 +28,7 @@ class TestTreeLock {
 				e.printStackTrace();
 			}
 		}
-
+		assert ctr.getCount() == 1000000;
 		System.out.println("Counter is " + ctr.getCount());
 	}
 }
