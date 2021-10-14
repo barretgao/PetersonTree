@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6.26.0/babel.js"></script>
+</head>
+<body>
+<script type="text/babel">
+    class App extends React.Component{
+        constructor() {
+            super();
+            // 1. add state
+            this.state = {
+                a : 20
+            };
+            this.change = this.change.bind(this);
+        }
+
+        render() {
+            return (
+                // 2. use state
+                <div>
+                    <div>
+                        <button onClick={ () => {this.setState({a : this.state.a+10})} }>
+                            click me</button>
+                        <button onClick={ this.change }>click me</button>
+                        {this.state.a}
+                    </div>
+                </div>
+            )
+        }
+        change() {
+            this.setState({a : 999})
+        }
+    }
+
+    ReactDOM.render(
+        <App/>,
+        document.getElementById('root')
+    );
+
+</script>
+
+
+</body>
+</html>
